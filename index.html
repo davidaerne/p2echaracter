@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Character Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .section {
+      margin-bottom: 20px;
+    }
+    .section h2 {
+      background: #f4f4f4;
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+    .list {
+      padding: 10px;
+      border: 1px solid #ddd;
+      background: #f9f9f9;
+      margin-top: 5px;
+    }
+    .list-item {
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Character Viewer</h1>
+  <div class="section" id="character-info">
+    <h2>Character Info</h2>
+    <div id="info"></div>
+  </div>
+  <div class="section" id="actions">
+    <h2>Actions</h2>
+    <div id="actions-list"></div>
+  </div>
+  <div class="section" id="spells">
+    <h2>Spells</h2>
+    <div id="spells-list"></div>
+  </div>
+  <div class="section" id="saving-throws">
+    <h2>Saving Throws</h2>
+    <div id="saving-throws-list"></div>
+  </div>
+  <div class="section" id="feats">
+    <h2>Feats</h2>
+    <div id="feats-list"></div>
+  </div>
+  <script>
+    // Character JSON
+    const characterData = {
+      "success": true,
+      "build": {
+        "name": "Orindral",
+        "class": "Oracle",
+        "level": 5,
+        "ancestry": "Samsaran",
+        "heritage": "Oracular Samsaran",
+        "background": "Magical Merchant",
+        "alignment": "N",
+        "deity": "Nethys – The All-Seeing Eye",
+        "abilities": { "str": 10, "dex": 12, "con": 14, "int": 14, "wis": 14, "cha": 12 },
+        "spells": [
+          { "level": 0, "list": ["Stabilize", "Guidance", "Forbidding Ward", "Light", "Daze", "Vitality Lash"] },
+          { "level": 1, "list": ["Heal", "Bless", "Concordant Choir", "Soothe"] },
+          { "level": 2, "list": ["Purifying Icicle", "Harm", "Fear"] },
+          { "level": 3, "list": ["Heroism", "Chilling Darkness", "Claim Curse"] }
+        ],
+        "savingThrows": { "fortitude": 2, "reflex": 2, "will": 4 },
+        "feats": [
+          { "name": "Nudge the Scales", "type": "Awarded Feat" },
+          { "name": "Crafter's Appraisal", "type": "Awarded Feat" },
+          { "name": "Reach Spell", "type": "Class Feat" }
+        ]
+      }
+    };
+
+    // Render Character Info
+    const renderCharacterInfo = () => {
+      const infoDiv = document.getElementById("info");
+      const char = characterData.build;
+      infoDiv.innerHTML = `
+        <p><strong>Name:</strong> ${char.name}</p>
+        <p><strong>Class:</strong> ${char.class}</p>
+        <p><strong>Level:</strong> ${char.level}</p>
+        <p><strong>Ancestry:</strong> ${char.ancestry}</p>
+        <p><strong>Heritage:</strong> ${char.heritage}</p>
+        <p><strong>Deity:</strong> ${char.deity}</p>
+      `;
+    };
+
+    // Render Actions (Placeholder for customization)
+    const renderActions = () => {
+      const actionsDiv = document.getElementById("actions-list");
+      actionsDiv.innerHTML = `
+        <div class="list-item">Strike: Attack a creature with a weapon.</div>
+        <div class="list-item">Cast a Spell: Use a spell from your spell list.</div>
+        <div class="list-item">Raise a Shield: Increase your AC for a round.</div>
+      `;
+    };
+
+    // Render Spells
+    const renderSpells = () => {
+      const spellsDiv = document.getElementById("spells-list");
+      const spells = characterData.build.spells;
+      spells.forEach(spellLevel => {
+        const spellList = spellLevel.list.map(spell => `<li>${spell}</li>`).join("");
+        spellsDiv.innerHTML += `
+          <div class="list">
+            <strong>Level ${spellLevel.level}:</strong>
+            <ul>${spellList}</ul>
+          </div>
+        `;
+      });
+    };
+
+    // Render Saving Throws
+    const renderSavingThrows = () => {
+      const savesDiv = document.getElementById("saving-throws-list");
+      const saves = characterData.build.savingThrows;
+      savesDiv.innerHTML = `
+        <p><strong>Fortitude:</strong> ${saves.fortitude}</p>
+        <p><strong>Reflex:</strong> ${saves.reflex}</p>
+        <p><strong>Will:</strong> ${saves.will}</p>
+      `;
+    };
+
+    // Render Feats
+    const renderFeats = () => {
+      const featsDiv = document.getElementById("feats-list");
+      const feats = characterData.build.feats;
+      feats.forEach(feat => {
+        featsDiv.innerHTML += `<div class="list-item">${feat.name} (${feat.type})</div>`;
+      });
+    };
+
+    // Initialize App
+    const initApp = () => {
+      renderCharacterInfo();
+      renderActions();
+      renderSpells();
+      renderSavingThrows();
+      renderFeats();
+    };
+
+    initApp();
+  </script>
+</body>
+</html>
