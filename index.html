@@ -70,7 +70,7 @@
     <button class="tab-button active" data-tab="character-info">Character Info</button>
     <button class="tab-button" data-tab="spells">Spells</button>
     <button class="tab-button" data-tab="feats">Feats</button>
-    <button class="tab-button" data-tab="saving-throws">Saving Throws</button>
+    <button class="tab-button" data-tab="skills-and-saves">Skills and Saves</button>
   </nav>
   <div id="character-info" class="content active">
     <h2>Character Info</h2>
@@ -84,10 +84,13 @@
     <h2>Feats</h2>
     <div id="feats-list"></div>
   </div>
-  <div id="saving-throws" class="content">
-    <h2>Saving Throws</h2>
+  <div id="skills-and-saves" class="content">
+    <h2>Skills and Saves</h2>
     <div id="saving-throws-list">
       <!-- Saving Throws will be dynamically generated -->
+    </div>
+    <div id="skills-list">
+      <!-- Skills will be dynamically generated -->
     </div>
   </div>
   <script>
@@ -105,6 +108,29 @@
           fortitude: { bonus: 2, description: "Represents toughness and resistance to physical harm like poison or disease." },
           reflex: { bonus: 2, description: "Represents agility and ability to dodge dangers like traps or explosions." },
           will: { bonus: 4, description: "Represents mental fortitude and resistance to fear, charm, and mind control." }
+        },
+        skills: {
+          classDC: 18,
+          perception: 9,
+          initiative: 0,
+          acrobatics: 2,
+          arcana: 9,
+          athletics: 9,
+          crafting: 11,
+          deception: 2,
+          diplomacy: 8,
+          intimidation: 2,
+          "lore: mercantile": 9,
+          "lore: samsaran": 11,
+          medicine: 9,
+          nature: 9,
+          occultism: 9,
+          performance: 2,
+          religion: 9,
+          society: 9,
+          stealth: 2,
+          survival: 9,
+          thievery: 2
         },
         feats: [
           { name: "Nudge the Scales", type: "Awarded Feat" },
@@ -140,16 +166,29 @@
       });
     };
 
-    const renderSavingThrows = () => {
+    const renderSkillsAndSaves = () => {
       const savesDiv = document.getElementById("saving-throws-list");
+      const skillsDiv = document.getElementById("skills-list");
       const saves = characterData.build.savingThrows;
+      const skills = characterData.build.skills;
 
+      // Render Saving Throws
       Object.keys(saves).forEach(save => {
         const saveInfo = saves[save];
         savesDiv.innerHTML += `
           <div class="list-item">
             <strong>${save.charAt(0).toUpperCase() + save.slice(1)}:</strong> +${saveInfo.bonus}
             <p>${saveInfo.description}</p>
+          </div>
+        `;
+      });
+
+      // Render Skills
+      Object.keys(skills).forEach(skill => {
+        const skillBonus = skills[skill];
+        skillsDiv.innerHTML += `
+          <div class="list-item">
+            <strong>${skill.charAt(0).toUpperCase() + skill.slice(1)}:</strong> +${skillBonus}
           </div>
         `;
       });
@@ -169,7 +208,7 @@
       renderCharacterInfo();
       renderSpells();
       renderFeats();
-      renderSavingThrows();
+      renderSkillsAndSaves();
     };
 
     initApp();
