@@ -47,18 +47,27 @@
     h2 {
       color: #007BFF;
     }
-    .section {
+    .spell-section {
       margin-bottom: 20px;
     }
-    .list-item {
-      margin-bottom: 10px;
-      padding: 10px;
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 5px;
+    .spell-header {
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 20px;
     }
-    .list-item:hover {
-      background: #f9f9f9;
+    .spell-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    .spell-table th, .spell-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    .spell-table th {
+      background: #007BFF;
+      color: white;
     }
   </style>
 </head>
@@ -86,12 +95,8 @@
   </div>
   <div id="skills-and-saves" class="content">
     <h2>Skills and Saves</h2>
-    <div id="saving-throws-list">
-      <!-- Saving Throws will be dynamically generated -->
-    </div>
-    <div id="skills-list">
-      <!-- Skills will be dynamically generated -->
-    </div>
+    <div id="saving-throws-list"></div>
+    <div id="skills-list"></div>
   </div>
   <script>
     const characterData = {
@@ -101,40 +106,45 @@
         level: 5,
         ancestry: "Samsaran",
         heritage: "Oracular Samsaran",
-        background: "Magical Merchant",
-        deity: "Nethys",
-        abilities: { str: 10, dex: 12, con: 14, int: 14, wis: 14, cha: 12 },
-        savingThrows: {
-          fortitude: { bonus: 2, description: "Represents toughness and resistance to physical harm like poison or disease." },
-          reflex: { bonus: 2, description: "Represents agility and ability to dodge dangers like traps or explosions." },
-          will: { bonus: 4, description: "Represents mental fortitude and resistance to fear, charm, and mind control." }
-        },
-        skills: {
-          classDC: 18,
-          perception: 9,
-          initiative: 0,
-          acrobatics: 2,
-          arcana: 9,
-          athletics: 9,
-          crafting: 11,
-          deception: 2,
-          diplomacy: 8,
-          intimidation: 2,
-          "lore: mercantile": 9,
-          "lore: samsaran": 11,
-          medicine: 9,
-          nature: 9,
-          occultism: 9,
-          performance: 2,
-          religion: 9,
-          society: 9,
-          stealth: 2,
-          survival: 9,
-          thievery: 2
-        },
-        feats: [
-          { name: "Nudge the Scales", type: "Awarded Feat" },
-          { name: "Reach Spell", type: "Class Feat" }
+        spells: [
+          {
+            level: "Cantrips",
+            spells: [
+              { name: "Stabilize", duration: "--", range: "30 feet", save: "--" },
+              { name: "Guidance", duration: "Until the start of your next turn", range: "30 feet", save: "--" },
+              { name: "Forbidding Ward", duration: "Sustained up to 1 minute", range: "30 feet", save: "--" },
+              { name: "Light", duration: "Until your next daily preparations", range: "120 feet", save: "--" },
+              { name: "Daze", duration: "1 round", range: "60 feet", save: "Will" },
+              { name: "Vitality Lash", duration: "--", range: "30 feet", save: "Fortitude" }
+            ]
+          },
+          {
+            level: 1,
+            spells: [
+              { name: "Heal", duration: "--", range: "Varies", save: "--" },
+              { name: "Bless", duration: "1 minute", range: "--", save: "--" },
+              { name: "Concordant Choir", duration: "--", range: "30 feet", save: "Basic Fortitude" },
+              { name: "Soothe", duration: "1 minute", range: "30 feet", save: "--" }
+            ]
+          },
+          {
+            level: 2,
+            spells: [
+              { name: "Purifying Icicle", duration: "--", range: "60 feet", save: "Fortitude" },
+              { name: "Harm", duration: "--", range: "Varies", save: "--" },
+              { name: "Fear", duration: "Varies", range: "30 feet", save: "Will" },
+              { name: "Cleanse Affliction", duration: "--", range: "Touch", save: "--" },
+              { name: "False Vitality", duration: "8 hours", range: "--", save: "--" }
+            ]
+          },
+          {
+            level: 3,
+            spells: [
+              { name: "Heroism", duration: "10 minutes", range: "Touch", save: "--" },
+              { name: "Chilling Darkness", duration: "--", range: "120 feet", save: "AC" },
+              { name: "Claim Curse", duration: "5 minutes", range: "Touch", save: "--" }
+            ]
+          }
         ]
       }
     };
@@ -148,47 +158,39 @@
         <p><strong>Level:</strong> ${char.level}</p>
         <p><strong>Ancestry:</strong> ${char.ancestry}</p>
         <p><strong>Heritage:</strong> ${char.heritage}</p>
-        <p><strong>Background:</strong> ${char.background}</p>
-        <p><strong>Deity:</strong> ${char.deity}</p>
       `;
     };
 
     const renderSpells = () => {
       const spellsDiv = document.getElementById("spells-list");
-      spellsDiv.innerHTML = "<p>No spells available yet.</p>"; // Add spells dynamically as needed
-    };
+      const spells = characterData.build.spells;
 
-    const renderFeats = () => {
-      const featsDiv = document.getElementById("feats-list");
-      const feats = characterData.build.feats;
-      feats.forEach(feat => {
-        featsDiv.innerHTML += `<div class="list-item">${feat.name} (${feat.type})</div>`;
-      });
-    };
-
-    const renderSkillsAndSaves = () => {
-      const savesDiv = document.getElementById("saving-throws-list");
-      const skillsDiv = document.getElementById("skills-list");
-      const saves = characterData.build.savingThrows;
-      const skills = characterData.build.skills;
-
-      // Render Saving Throws
-      Object.keys(saves).forEach(save => {
-        const saveInfo = saves[save];
-        savesDiv.innerHTML += `
-          <div class="list-item">
-            <strong>${save.charAt(0).toUpperCase() + save.slice(1)}:</strong> +${saveInfo.bonus}
-            <p>${saveInfo.description}</p>
-          </div>
-        `;
-      });
-
-      // Render Skills
-      Object.keys(skills).forEach(skill => {
-        const skillBonus = skills[skill];
-        skillsDiv.innerHTML += `
-          <div class="list-item">
-            <strong>${skill.charAt(0).toUpperCase() + skill.slice(1)}:</strong> +${skillBonus}
+      spells.forEach(spellLevel => {
+        spellsDiv.innerHTML += `
+          <div class="spell-section">
+            <div class="spell-header">${spellLevel.level} Spells</div>
+            <table class="spell-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Duration</th>
+                  <th>Range</th>
+                  <th>Save</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${spellLevel.spells
+                  .map(spell => `
+                    <tr>
+                      <td>${spell.name}</td>
+                      <td>${spell.duration}</td>
+                      <td>${spell.range}</td>
+                      <td>${spell.save}</td>
+                    </tr>
+                  `)
+                  .join("")}
+              </tbody>
+            </table>
           </div>
         `;
       });
@@ -207,8 +209,6 @@
     const initApp = () => {
       renderCharacterInfo();
       renderSpells();
-      renderFeats();
-      renderSkillsAndSaves();
     };
 
     initApp();
