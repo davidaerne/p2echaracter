@@ -7,21 +7,55 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 20px;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f4;
+    }
+    header {
+      background: #333;
+      color: #fff;
+      padding: 10px 20px;
+      text-align: center;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      background: #444;
+    }
+    nav button {
+      background: #555;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      flex: 1;
+    }
+    nav button.active {
+      background: #007BFF;
+    }
+    nav button:hover {
+      background: #666;
+    }
+    .content {
+      display: none;
+      padding: 20px;
+    }
+    .content.active {
+      display: block;
     }
     .section {
       margin-bottom: 20px;
     }
     .section h2 {
-      background: #f4f4f4;
-      padding: 10px;
-      border: 1px solid #ddd;
+      color: #007BFF;
+      margin-bottom: 10px;
     }
     .list {
       padding: 10px;
       border: 1px solid #ddd;
-      background: #f9f9f9;
+      background: white;
       margin-top: 5px;
+      border-radius: 5px;
     }
     .list-item {
       margin-bottom: 5px;
@@ -29,31 +63,42 @@
   </style>
 </head>
 <body>
-  <h1>Character Viewer</h1>
-  <div class="section" id="character-info">
-    <h2>Character Info</h2>
-    <div id="info"></div>
+  <header>
+    <h1>Character Viewer</h1>
+  </header>
+  <nav>
+    <button class="tab-button active" data-tab="character-info">Character Info</button>
+    <button class="tab-button" data-tab="spells">Spells</button>
+    <button class="tab-button" data-tab="feats">Feats</button>
+    <button class="tab-button" data-tab="saving-throws">Saving Throws</button>
+  </nav>
+  <div id="character-info" class="content active">
+    <div class="section">
+      <h2>Character Info</h2>
+      <div id="info"></div>
+    </div>
   </div>
-  <div class="section" id="actions">
-    <h2>Actions</h2>
-    <div id="actions-list"></div>
+  <div id="spells" class="content">
+    <div class="section">
+      <h2>Spells</h2>
+      <div id="spells-list"></div>
+    </div>
   </div>
-  <div class="section" id="spells">
-    <h2>Spells</h2>
-    <div id="spells-list"></div>
+  <div id="feats" class="content">
+    <div class="section">
+      <h2>Feats</h2>
+      <div id="feats-list"></div>
+    </div>
   </div>
-  <div class="section" id="saving-throws">
-    <h2>Saving Throws</h2>
-    <div id="saving-throws-list"></div>
-  </div>
-  <div class="section" id="feats">
-    <h2>Feats</h2>
-    <div id="feats-list"></div>
+  <div id="saving-throws" class="content">
+    <div class="section">
+      <h2>Saving Throws</h2>
+      <div id="saving-throws-list"></div>
+    </div>
   </div>
   <script>
     // Character JSON
     const characterData = {
-      "success": true,
       "build": {
         "name": "Orindral",
         "class": "Oracle",
@@ -65,7 +110,7 @@
         "deity": "Nethys – The All-Seeing Eye",
         "abilities": { "str": 10, "dex": 12, "con": 14, "int": 14, "wis": 14, "cha": 12 },
         "spells": [
-          { "level": 0, "list": ["Stabilize", "Guidance", "Forbidding Ward", "Light", "Daze", "Vitality Lash"] },
+          { "level": "Cantrips", "list": ["Stabilize", "Guidance", "Forbidding Ward", "Light", "Daze", "Vitality Lash"] },
           { "level": 1, "list": ["Heal", "Bless", "Concordant Choir", "Soothe"] },
           { "level": 2, "list": ["Purifying Icicle", "Harm", "Fear"] },
           { "level": 3, "list": ["Heroism", "Chilling Darkness", "Claim Curse"] }
@@ -93,16 +138,6 @@
       `;
     };
 
-    // Render Actions (Placeholder for customization)
-    const renderActions = () => {
-      const actionsDiv = document.getElementById("actions-list");
-      actionsDiv.innerHTML = `
-        <div class="list-item">Strike: Attack a creature with a weapon.</div>
-        <div class="list-item">Cast a Spell: Use a spell from your spell list.</div>
-        <div class="list-item">Raise a Shield: Increase your AC for a round.</div>
-      `;
-    };
-
     // Render Spells
     const renderSpells = () => {
       const spellsDiv = document.getElementById("spells-list");
@@ -111,7 +146,7 @@
         const spellList = spellLevel.list.map(spell => `<li>${spell}</li>`).join("");
         spellsDiv.innerHTML += `
           <div class="list">
-            <strong>Level ${spellLevel.level}:</strong>
+            <strong>${spellLevel.level}:</strong>
             <ul>${spellList}</ul>
           </div>
         `;
@@ -138,10 +173,20 @@
       });
     };
 
+    // Tab Functionality
+    document.querySelectorAll(".tab-button").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".tab-button").forEach(btn => btn.classList.remove("active"));
+        document.querySelectorAll(".content").forEach(content => content.classList.remove("active"));
+
+        button.classList.add("active");
+        document.getElementById(button.dataset.tab).classList.add("active");
+      });
+    });
+
     // Initialize App
     const initApp = () => {
       renderCharacterInfo();
-      renderActions();
       renderSpells();
       renderSavingThrows();
       renderFeats();
