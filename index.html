@@ -50,15 +50,38 @@
       color: #007BFF;
       margin-bottom: 10px;
     }
-    .list {
+    .spell {
       padding: 10px;
       border: 1px solid #ddd;
       background: white;
-      margin-top: 5px;
+      margin: 10px 0;
       border-radius: 5px;
+      cursor: pointer;
     }
-    .list-item {
-      margin-bottom: 5px;
+    .spell:hover {
+      background: #f9f9f9;
+    }
+    .spell-header {
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+    }
+    .spell-tags {
+      margin: 5px 0;
+    }
+    .spell-tags span {
+      background: #007BFF;
+      color: white;
+      padding: 3px 8px;
+      margin-right: 5px;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+    .spell-details {
+      display: none;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #555;
     }
   </style>
 </head>
@@ -100,77 +123,50 @@
     // Character JSON
     const characterData = {
       "build": {
-        "name": "Orindral",
-        "class": "Oracle",
-        "level": 5,
-        "ancestry": "Samsaran",
-        "heritage": "Oracular Samsaran",
-        "background": "Magical Merchant",
-        "alignment": "N",
-        "deity": "Nethys – The All-Seeing Eye",
-        "abilities": { "str": 10, "dex": 12, "con": 14, "int": 14, "wis": 14, "cha": 12 },
         "spells": [
-          { "level": "Cantrips", "list": ["Stabilize", "Guidance", "Forbidding Ward", "Light", "Daze", "Vitality Lash"] },
-          { "level": 1, "list": ["Heal", "Bless", "Concordant Choir", "Soothe"] },
-          { "level": 2, "list": ["Purifying Icicle", "Harm", "Fear"] },
-          { "level": 3, "list": ["Heroism", "Chilling Darkness", "Claim Curse"] }
-        ],
-        "savingThrows": { "fortitude": 2, "reflex": 2, "will": 4 },
-        "feats": [
-          { "name": "Nudge the Scales", "type": "Awarded Feat" },
-          { "name": "Crafter's Appraisal", "type": "Awarded Feat" },
-          { "name": "Reach Spell", "type": "Class Feat" }
+          {
+            "level": "Cantrips",
+            "list": [
+              { "name": "Light", "tags": ["Utility"], "details": "Creates light in a 20-foot radius." },
+              { "name": "Guidance", "tags": ["Buff"], "details": "Grants a +1 status bonus to an ally's next check." }
+            ]
+          },
+          {
+            "level": 1,
+            "list": [
+              { "name": "Heal", "tags": ["Healing"], "details": "Restores 1d8 Hit Points (or deals damage to undead)." },
+              { "name": "Bless", "tags": ["Buff"], "details": "Grants a +1 bonus to attack rolls in an area." }
+            ]
+          }
         ]
       }
-    };
-
-    // Render Character Info
-    const renderCharacterInfo = () => {
-      const infoDiv = document.getElementById("info");
-      const char = characterData.build;
-      infoDiv.innerHTML = `
-        <p><strong>Name:</strong> ${char.name}</p>
-        <p><strong>Class:</strong> ${char.class}</p>
-        <p><strong>Level:</strong> ${char.level}</p>
-        <p><strong>Ancestry:</strong> ${char.ancestry}</p>
-        <p><strong>Heritage:</strong> ${char.heritage}</p>
-        <p><strong>Deity:</strong> ${char.deity}</p>
-      `;
     };
 
     // Render Spells
     const renderSpells = () => {
       const spellsDiv = document.getElementById("spells-list");
       const spells = characterData.build.spells;
+
       spells.forEach(spellLevel => {
-        const spellList = spellLevel.list.map(spell => `<li>${spell}</li>`).join("");
-        spellsDiv.innerHTML += `
-          <div class="list">
-            <strong>${spellLevel.level}:</strong>
-            <ul>${spellList}</ul>
-          </div>
-        `;
+        spellsDiv.innerHTML += `<h3>${spellLevel.level}</h3>`;
+        spellLevel.list.forEach(spell => {
+          spellsDiv.innerHTML += `
+            <div class="spell" onclick="toggleSpellDetails(this)">
+              <div class="spell-header">
+                <span>${spell.name}</span>
+                <span>${spell.tags.map(tag => `<span class="spell-tags">${tag}</span>`).join("")}</span>
+              </div>
+              <div class="spell-details">${spell.details}</div>
+            </div>
+          `;
+        });
       });
     };
 
-    // Render Saving Throws
-    const renderSavingThrows = () => {
-      const savesDiv = document.getElementById("saving-throws-list");
-      const saves = characterData.build.savingThrows;
-      savesDiv.innerHTML = `
-        <p><strong>Fortitude:</strong> ${saves.fortitude}</p>
-        <p><strong>Reflex:</strong> ${saves.reflex}</p>
-        <p><strong>Will:</strong> ${saves.will}</p>
-      `;
-    };
-
-    // Render Feats
-    const renderFeats = () => {
-      const featsDiv = document.getElementById("feats-list");
-      const feats = characterData.build.feats;
-      feats.forEach(feat => {
-        featsDiv.innerHTML += `<div class="list-item">${feat.name} (${feat.type})</div>`;
-      });
+    // Toggle Spell Details
+    const toggleSpellDetails = (spellElement) => {
+      const details = spellElement.querySelector(".spell-details");
+      details.style.display = details.style.display === "block" ? "none" : "block";
     };
 
     // Tab Functionality
@@ -186,10 +182,7 @@
 
     // Initialize App
     const initApp = () => {
-      renderCharacterInfo();
       renderSpells();
-      renderSavingThrows();
-      renderFeats();
     };
 
     initApp();
