@@ -50,30 +50,15 @@
     .section {
       margin-bottom: 20px;
     }
-    .spell {
-      padding: 10px;
-      border: 1px solid #ddd;
-      background: white;
-      margin: 10px 0;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .spell:hover {
-      background: #f9f9f9;
-    }
-    .spell-header {
-      font-weight: bold;
-      display: flex;
-      justify-content: space-between;
-    }
-    .spell-details {
-      display: none;
-      margin-top: 10px;
-      font-size: 14px;
-      color: #555;
-    }
     .list-item {
-      margin-bottom: 5px;
+      margin-bottom: 10px;
+      padding: 10px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    .list-item:hover {
+      background: #f9f9f9;
     }
   </style>
 </head>
@@ -101,7 +86,9 @@
   </div>
   <div id="saving-throws" class="content">
     <h2>Saving Throws</h2>
-    <div id="saving-throws-list"></div>
+    <div id="saving-throws-list">
+      <!-- Saving Throws will be dynamically generated -->
+    </div>
   </div>
   <script>
     const characterData = {
@@ -114,23 +101,11 @@
         background: "Magical Merchant",
         deity: "Nethys",
         abilities: { str: 10, dex: 12, con: 14, int: 14, wis: 14, cha: 12 },
-        spells: [
-          {
-            level: "Cantrips",
-            list: [
-              { name: "Light", details: "Creates light in a 20-foot radius." },
-              { name: "Guidance", details: "Grants +1 to an ally's next roll." }
-            ]
-          },
-          {
-            level: 1,
-            list: [
-              { name: "Heal", details: "Restores 1d8 HP to a target or damages undead." },
-              { name: "Bless", details: "Grants allies +1 to attack rolls in an area." }
-            ]
-          }
-        ],
-        savingThrows: { fortitude: 2, reflex: 2, will: 4 },
+        savingThrows: {
+          fortitude: { bonus: 2, description: "Represents toughness and resistance to physical harm like poison or disease." },
+          reflex: { bonus: 2, description: "Represents agility and ability to dodge dangers like traps or explosions." },
+          will: { bonus: 4, description: "Represents mental fortitude and resistance to fear, charm, and mind control." }
+        },
         feats: [
           { name: "Nudge the Scales", type: "Awarded Feat" },
           { name: "Reach Spell", type: "Class Feat" }
@@ -154,18 +129,7 @@
 
     const renderSpells = () => {
       const spellsDiv = document.getElementById("spells-list");
-      const spells = characterData.build.spells;
-      spells.forEach(spellLevel => {
-        spellsDiv.innerHTML += `<h3>${spellLevel.level}</h3>`;
-        spellLevel.list.forEach(spell => {
-          spellsDiv.innerHTML += `
-            <div class="spell" onclick="toggleSpellDetails(this)">
-              <div class="spell-header">${spell.name}</div>
-              <div class="spell-details">${spell.details}</div>
-            </div>
-          `;
-        });
-      });
+      spellsDiv.innerHTML = "<p>No spells available yet.</p>"; // Add spells dynamically as needed
     };
 
     const renderFeats = () => {
@@ -179,16 +143,16 @@
     const renderSavingThrows = () => {
       const savesDiv = document.getElementById("saving-throws-list");
       const saves = characterData.build.savingThrows;
-      savesDiv.innerHTML = `
-        <p><strong>Fortitude:</strong> ${saves.fortitude}</p>
-        <p><strong>Reflex:</strong> ${saves.reflex}</p>
-        <p><strong>Will:</strong> ${saves.will}</p>
-      `;
-    };
 
-    const toggleSpellDetails = spellElement => {
-      const details = spellElement.querySelector(".spell-details");
-      details.style.display = details.style.display === "block" ? "none" : "block";
+      Object.keys(saves).forEach(save => {
+        const saveInfo = saves[save];
+        savesDiv.innerHTML += `
+          <div class="list-item">
+            <strong>${save.charAt(0).toUpperCase() + save.slice(1)}:</strong> +${saveInfo.bonus}
+            <p>${saveInfo.description}</p>
+          </div>
+        `;
+      });
     };
 
     document.querySelectorAll(".tab-button").forEach(button => {
