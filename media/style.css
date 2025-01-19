@@ -98,3 +98,28 @@ h2 {
 .content.active {
   display: block;
 }
+
+/* Collapsible Spell Sections */
+.spell-section {
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.spell-header {
+  background: #007BFF;
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.spell-header:hover {
+  background: #0056b3;
+}
+
+.spell-body {
+  display: none;
+  padding: 10px;
+  background: white;
+}
