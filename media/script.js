@@ -6,24 +6,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const characterData = {
     build: {
-      name: "Orindral",
-      class: "Alchemist",
-      level: 5,
-      ancestry: "Samsaran",
-      heritage: "Oracular Samsaran",
       spells: [
-        { level: "Cantrips", list: ["Stabilize", "Guidance", "Light"] },
-        { level: "1st Level", list: ["Heal", "Bless", "Soothe"] }
-      ],
-      feats: ["Nudge the Scales", "Reach Spell"],
-      skills: { Acrobatics: "+5", Arcana: "+7", Perception: "+9" },
-      recipes: [
         {
-          name: "Remove Curse Alchemical Elixir",
-          level: 4,
-          effects:
-            "Allows the drinker to attempt a new saving throw against a curse.",
-          components: "Shimmering Nightshade, Silver Dust, Moonlight Essence."
+          level: "Cantrips (Heightened Level 3)",
+          slots: "Unlimited",
+          list: [
+            {
+              name: "Stabilize",
+              description: "Stops a dying creature from losing HP."
+            },
+            {
+              name: "Guidance",
+              description: "Grants a +1 bonus to an ally's next attack roll, skill check, or saving throw."
+            },
+            {
+              name: "Light",
+              description: "Illuminates an object for 20 feet of bright light."
+            }
+          ]
+        },
+        {
+          level: "Spell Rank 1",
+          slots: "4 Slots",
+          list: [
+            {
+              name: "Heal",
+              description: "Restores hit points or damages undead."
+            },
+            {
+              name: "Bless",
+              description: "Grants allies within a 30-foot aura a +1 bonus to attack rolls."
+            }
+          ]
+        },
+        {
+          level: "Spell Rank 2",
+          slots: "3 Slots",
+          list: [
+            {
+              name: "Fear",
+              description: "Instills a creature with fear, causing them to become frightened."
+            },
+            {
+              name: "Harm",
+              description: "Damages a living creature or heals undead."
+            }
+          ]
         }
       ]
     }
@@ -48,62 +76,29 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Render Character Info
-  const renderCharacterInfo = () => {
-    const infoDiv = document.getElementById("info");
-    const char = characterData.build;
-    infoDiv.innerHTML = `
-      <p><strong>Name:</strong> ${char.name}</p>
-      <p><strong>Class:</strong> ${char.class}</p>
-      <p><strong>Level:</strong> ${char.level}</p>
-      <p><strong>Ancestry:</strong> ${char.ancestry}</p>
-      <p><strong>Heritage:</strong> ${char.heritage}</p>
-    `;
-  };
-
   // Render Spells
   const renderSpells = () => {
     const spellsDiv = document.getElementById("spells-list");
     const spells = characterData.build.spells;
     spellsDiv.innerHTML = spells
       .map(
-        (spell) => `
-      <h3>${spell.level}</h3>
-      <ul>${spell.list.map((s) => `<li>${s}</li>`).join("")}</ul>
-    `
-      )
-      .join("");
-  };
-
-  // Render Feats
-  const renderFeats = () => {
-    const featsDiv = document.getElementById("feats-list");
-    const feats = characterData.build.feats;
-    featsDiv.innerHTML = feats.map((feat) => `<li>${feat}</li>`).join("");
-  };
-
-  // Render Skills and Saves
-  const renderSkillsAndSaves = () => {
-    const skillsDiv = document.getElementById("skills-list");
-    const skills = characterData.build.skills;
-    skillsDiv.innerHTML = Object.keys(skills)
-      .map(
-        (skill) =>
-          `<p><strong>${skill}:</strong> ${skills[skill]}</p>`
-      )
-      .join("");
-  };
-
-  // Render Recipes
-  const renderRecipes = () => {
-    const recipesDiv = document.getElementById("recipes-list");
-    const recipes = characterData.build.recipes;
-    recipesDiv.innerHTML = recipes
-      .map(
-        (recipe) => `
-      <h3>${recipe.name} (Level ${recipe.level})</h3>
-      <p><strong>Effects:</strong> ${recipe.effects}</p>
-      <p><strong>Components:</strong> ${recipe.components}</p>
+        (spellLevel) => `
+      <div class="spell-section">
+        <div class="spell-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">
+          ${spellLevel.level} (${spellLevel.slots})
+        </div>
+        <div class="spell-body">
+          ${spellLevel.list
+            .map(
+              (spell) => `
+            <div>
+              <strong>${spell.name}:</strong> ${spell.description}
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+      </div>
     `
       )
       .join("");
@@ -111,11 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialize App
   const initApp = () => {
-    renderCharacterInfo();
     renderSpells();
-    renderFeats();
-    renderSkillsAndSaves();
-    renderRecipes();
   };
 
   initApp();
