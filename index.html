@@ -1,71 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Character Viewer</title>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="media/style.css">
-  <script defer src="media/script.js"></script>
-</head>
-<body>
-  <div class="app-container">
-    <!-- Sidebar -->
-    <nav class="sidebar">
-      <button class="sidebar-toggle">
-        <span class="material-icons">menu</span>
-      </button>
-      <ul class="sidebar-menu">
-        <li class="sidebar-item active" data-tab="character-info">
-          <span class="material-icons">person</span>
-          <span class="sidebar-text">Character Info</span>
-        </li>
-        <li class="sidebar-item" data-tab="spells">
-          <span class="material-icons">auto_awesome</span>
-          <span class="sidebar-text">Spells</span>
-        </li>
-        <li class="sidebar-item" data-tab="feats">
-          <span class="material-icons">stars</span>
-          <span class="sidebar-text">Feats</span>
-        </li>
-        <li class="sidebar-item" data-tab="skills-and-saves">
-          <span class="material-icons">assessment</span>
-          <span class="sidebar-text">Skills and Saves</span>
-        </li>
-        <li class="sidebar-item" data-tab="recipes">
-          <span class="material-icons">science</span>
-          <span class="sidebar-text">Recipes</span>
-        </li>
-      </ul>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="main-content">
-      <header>
-        <h1>Character Viewer</h1>
-      </header>
-      <div id="character-info" class="content active">
-        <h2>Character Info</h2>
-        <div id="info"></div>
+<div id="spells" class="content">
+  <h2>Spells</h2>
+  <div class="spell-section" id="spell-level-3">
+    <div class="spell-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">
+      <span>Spell Rank 3</span>
+      <div class="spell-slots">
+        <span class="slot active"></span>
+        <span class="slot active"></span>
+        <span class="slot inactive"></span>
       </div>
-      <div id="spells" class="content">
-        <h2>Spells</h2>
-        <div id="spells-list"></div>
+    </div>
+    <div class="spell-body">
+      <div class="spell-entry">
+        <span class="spell-name">Heroism</span>
+        <span class="spell-info">Duration: 10 minutes | Range: Touch</span>
+        <span class="spell-description">
+          Grants a +1 status bonus to attack rolls, Perception checks, saving throws, and skill checks for 10 minutes.
+        </span>
       </div>
-      <div id="feats" class="content">
-        <h2>Feats</h2>
-        <div id="feats-list"></div>
+      <div class="spell-entry">
+        <span class="spell-name">Chilling Darkness</span>
+        <span class="spell-info">Duration: — | Range: 120 feet</span>
+        <span class="spell-description">
+          Deals cold damage to a target and harms creatures with a weakness to sunlight.
+        </span>
       </div>
-      <div id="skills-and-saves" class="content">
-        <h2>Skills and Saves</h2>
-        <div id="saving-throws-list"></div>
-        <div id="skills-list"></div>
-      </div>
-      <div id="recipes" class="content">
-        <h2>Recipes</h2>
-        <div id="recipes-list"></div>
+      <div class="spell-entry">
+        <span class="spell-name">Claim Curse</span>
+        <span class="spell-info">Duration: 5 minutes | Range: Touch</span>
+        <span class="spell-description">
+          Removes a curse from the target and transfers it to yourself for a limited time.
+        </span>
       </div>
     </div>
   </div>
-</body>
-</html>
+</div>
