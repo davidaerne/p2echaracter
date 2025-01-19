@@ -47,27 +47,39 @@
     h2 {
       color: #007BFF;
     }
-    .spell-section {
+    .recipe {
       margin-bottom: 20px;
-    }
-    .spell-header {
-      font-weight: bold;
-      font-size: 18px;
-      margin-top: 20px;
-    }
-    .spell-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-    .spell-table th, .spell-table td {
+      padding: 10px;
       border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
+      background: white;
+      border-radius: 5px;
     }
-    .spell-table th {
-      background: #007BFF;
-      color: white;
+    .recipe-header {
+      font-weight: bold;
+      cursor: pointer;
+      background: #f4f4f4;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .recipe-header:hover {
+      background: #ddd;
+    }
+    .recipe-body {
+      display: none;
+      padding: 10px;
+    }
+    .recipe-section {
+      margin-bottom: 10px;
+    }
+    .recipe-section h3 {
+      font-size: 16px;
+      margin: 5px 0;
+      color: #555;
+    }
+    .recipe-section p, .recipe-section ul {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #333;
     }
   </style>
 </head>
@@ -80,6 +92,7 @@
     <button class="tab-button" data-tab="spells">Spells</button>
     <button class="tab-button" data-tab="feats">Feats</button>
     <button class="tab-button" data-tab="skills-and-saves">Skills and Saves</button>
+    <button class="tab-button" data-tab="recipes">Recipes</button>
   </nav>
   <div id="character-info" class="content active">
     <h2>Character Info</h2>
@@ -98,102 +111,96 @@
     <div id="saving-throws-list"></div>
     <div id="skills-list"></div>
   </div>
+  <div id="recipes" class="content">
+    <h2>Recipes</h2>
+    <div id="recipes-list"></div>
+  </div>
   <script>
     const characterData = {
       build: {
         name: "Orindral",
-        class: "Oracle",
+        class: "Alchemist",
         level: 5,
         ancestry: "Samsaran",
         heritage: "Oracular Samsaran",
-        spells: [
+        recipes: [
           {
-            level: "Cantrips",
-            spells: [
-              { name: "Stabilize", duration: "--", range: "30 feet", save: "--" },
-              { name: "Guidance", duration: "Until the start of your next turn", range: "30 feet", save: "--" },
-              { name: "Forbidding Ward", duration: "Sustained up to 1 minute", range: "30 feet", save: "--" },
-              { name: "Light", duration: "Until your next daily preparations", range: "120 feet", save: "--" },
-              { name: "Daze", duration: "1 round", range: "60 feet", save: "Will" },
-              { name: "Vitality Lash", duration: "--", range: "30 feet", save: "Fortitude" }
-            ]
-          },
-          {
-            level: 1,
-            spells: [
-              { name: "Heal", duration: "--", range: "Varies", save: "--" },
-              { name: "Bless", duration: "1 minute", range: "--", save: "--" },
-              { name: "Concordant Choir", duration: "--", range: "30 feet", save: "Basic Fortitude" },
-              { name: "Soothe", duration: "1 minute", range: "30 feet", save: "--" }
-            ]
-          },
-          {
-            level: 2,
-            spells: [
-              { name: "Purifying Icicle", duration: "--", range: "60 feet", save: "Fortitude" },
-              { name: "Harm", duration: "--", range: "Varies", save: "--" },
-              { name: "Fear", duration: "Varies", range: "30 feet", save: "Will" },
-              { name: "Cleanse Affliction", duration: "--", range: "Touch", save: "--" },
-              { name: "False Vitality", duration: "8 hours", range: "--", save: "--" }
-            ]
-          },
-          {
-            level: 3,
-            spells: [
-              { name: "Heroism", duration: "10 minutes", range: "Touch", save: "--" },
-              { name: "Chilling Darkness", duration: "--", range: "120 feet", save: "AC" },
-              { name: "Claim Curse", duration: "5 minutes", range: "Touch", save: "--" }
-            ]
+            name: "Remove Curse Alchemical Elixir",
+            level: 4,
+            craftingDC: 18,
+            cost: "30 gp (raw materials)",
+            batchYield: "2 elixirs",
+            traits: ["Alchemical", "Consumable", "Healing", "Magical"],
+            usage: "Held in 1 hand",
+            activation: "[1 action] to drink or [2 actions] to administer",
+            effects: `
+              When consumed, the elixir emits a soothing light that flows through the target’s body. 
+              The drinker can immediately attempt a new saving throw against one curse currently affecting them, 
+              using a bonus equal to the alchemist's crafting DC instead of their own saving throw bonus, if it is higher.
+              
+              Alternatively, the alchemist may target the curse directly with this elixir as part of administering it. 
+              If so, the alchemist makes a Crafting check against the curse’s DC to attempt to remove it. This requires [2 actions].
+            `,
+            components: `
+              - Shimmering Nightshade Extract – Known for absorbing magical misalignments.
+              - Purified Silver Dust – A symbolic representation of purity, finely ground and infused into the mixture.
+              - Essence of Moonlight – Captured through a delicate alchemical distillation process under a full moon.
+              - Etherial Willow Sap – Drawn from a magical willow tree rumored to grow near sources of divine energy.
+            `,
+            instructions: `
+              1. Begin with a concentrated solution of purified water and distilled alcohol.
+              2. Carefully stir in the silver dust until the liquid sparkles faintly in light.
+              3. Add the shimmering nightshade extract, stirring counterclockwise to stabilize the magical properties.
+              4. Introduce the moonlight essence drop by drop, timing each addition with a soft chant of purification.
+              5. Heat the mixture gently with an alchemical flame, adding the willow sap at the peak of heating to bind the energies.
+              6. Cool the elixir in a silver container to finalize.
+            `
           }
         ]
       }
     };
 
-    const renderCharacterInfo = () => {
-      const infoDiv = document.getElementById("info");
-      const char = characterData.build;
-      infoDiv.innerHTML = `
-        <p><strong>Name:</strong> ${char.name}</p>
-        <p><strong>Class:</strong> ${char.class}</p>
-        <p><strong>Level:</strong> ${char.level}</p>
-        <p><strong>Ancestry:</strong> ${char.ancestry}</p>
-        <p><strong>Heritage:</strong> ${char.heritage}</p>
-      `;
-    };
+    const renderRecipes = () => {
+      const recipesDiv = document.getElementById("recipes-list");
+      const recipes = characterData.build.recipes;
 
-    const renderSpells = () => {
-      const spellsDiv = document.getElementById("spells-list");
-      const spells = characterData.build.spells;
-
-      spells.forEach(spellLevel => {
-        spellsDiv.innerHTML += `
-          <div class="spell-section">
-            <div class="spell-header">${spellLevel.level} Spells</div>
-            <table class="spell-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Duration</th>
-                  <th>Range</th>
-                  <th>Save</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${spellLevel.spells
-                  .map(spell => `
-                    <tr>
-                      <td>${spell.name}</td>
-                      <td>${spell.duration}</td>
-                      <td>${spell.range}</td>
-                      <td>${spell.save}</td>
-                    </tr>
-                  `)
-                  .join("")}
-              </tbody>
-            </table>
+      recipes.forEach(recipe => {
+        recipesDiv.innerHTML += `
+          <div class="recipe">
+            <div class="recipe-header" onclick="toggleRecipeBody(this)">
+              ${recipe.name} (Level ${recipe.level})
+            </div>
+            <div class="recipe-body">
+              <div class="recipe-section">
+                <h3>Crafting Information</h3>
+                <p><strong>Crafting DC:</strong> ${recipe.craftingDC}</p>
+                <p><strong>Cost:</strong> ${recipe.cost}</p>
+                <p><strong>Batch Yield:</strong> ${recipe.batchYield}</p>
+                <p><strong>Traits:</strong> ${recipe.traits.join(", ")}</p>
+                <p><strong>Usage:</strong> ${recipe.usage}</p>
+                <p><strong>Activation:</strong> ${recipe.activation}</p>
+              </div>
+              <div class="recipe-section">
+                <h3>Effects</h3>
+                <p>${recipe.effects}</p>
+              </div>
+              <div class="recipe-section">
+                <h3>Recipe Components</h3>
+                <p>${recipe.components}</p>
+              </div>
+              <div class="recipe-section">
+                <h3>Crafting Instructions</h3>
+                <p>${recipe.instructions}</p>
+              </div>
+            </div>
           </div>
         `;
       });
+    };
+
+    const toggleRecipeBody = (header) => {
+      const body = header.nextElementSibling;
+      body.style.display = body.style.display === "block" ? "none" : "block";
     };
 
     document.querySelectorAll(".tab-button").forEach(button => {
@@ -207,8 +214,7 @@
     });
 
     const initApp = () => {
-      renderCharacterInfo();
-      renderSpells();
+      renderRecipes();
     };
 
     initApp();
