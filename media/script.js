@@ -1,113 +1,87 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const sidebar = document.querySelector(".sidebar");
-  const toggleButton = document.querySelector(".sidebar-toggle");
-  const sidebarItems = document.querySelectorAll(".sidebar-item");
-  const contentSections = document.querySelectorAll(".content");
-
-  const characterData = {
-    build: {
+  const spellData = [
+    {
+      level: "Spell Rank 3",
+      slots: { active: 2, total: 3 },
       spells: [
         {
-          level: "Cantrips (Heightened Level 3)",
-          slots: "Unlimited",
-          list: [
-            {
-              name: "Stabilize",
-              description: "Stops a dying creature from losing HP."
-            },
-            {
-              name: "Guidance",
-              description: "Grants a +1 bonus to an ally's next attack roll, skill check, or saving throw."
-            },
-            {
-              name: "Light",
-              description: "Illuminates an object for 20 feet of bright light."
-            }
-          ]
+          name: "Heroism",
+          duration: "10 minutes",
+          range: "Touch",
+          description:
+            "Grants a +1 status bonus to attack rolls, Perception checks, saving throws, and skill checks for 10 minutes.",
         },
         {
-          level: "Spell Rank 1",
-          slots: "4 Slots",
-          list: [
-            {
-              name: "Heal",
-              description: "Restores hit points or damages undead."
-            },
-            {
-              name: "Bless",
-              description: "Grants allies within a 30-foot aura a +1 bonus to attack rolls."
-            }
-          ]
+          name: "Chilling Darkness",
+          duration: "—",
+          range: "120 feet",
+          description:
+            "Deals cold damage to a target and harms creatures with a weakness to sunlight.",
         },
         {
-          level: "Spell Rank 2",
-          slots: "3 Slots",
-          list: [
-            {
-              name: "Fear",
-              description: "Instills a creature with fear, causing them to become frightened."
-            },
-            {
-              name: "Harm",
-              description: "Damages a living creature or heals undead."
-            }
-          ]
-        }
-      ]
-    }
-  };
+          name: "Claim Curse",
+          duration: "5 minutes",
+          range: "Touch",
+          description:
+            "Removes a curse from the target and transfers it to yourself for a limited time.",
+        },
+      ],
+    },
+  ];
 
-  // Toggle Sidebar Expansion
-  toggleButton.addEventListener("click", () => {
-    sidebar.classList.toggle("expanded");
-  });
-
-  // Navigation Menu Click
-  sidebarItems.forEach((item) => {
-    item.addEventListener("click", () => {
-      sidebarItems.forEach((i) => i.classList.remove("active"));
-      item.classList.add("active");
-
-      const tab = item.dataset.tab;
-      contentSections.forEach((section) => {
-        section.classList.remove("active");
-        if (section.id === tab) section.classList.add("active");
-      });
-    });
-  });
-
-  // Render Spells
   const renderSpells = () => {
-    const spellsDiv = document.getElementById("spells-list");
-    const spells = characterData.build.spells;
-    spellsDiv.innerHTML = spells
-      .map(
-        (spellLevel) => `
-      <div class="spell-section">
-        <div class="spell-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">
-          ${spellLevel.level} (${spellLevel.slots})
-        </div>
-        <div class="spell-body">
-          ${spellLevel.list
+    const spellsContainer = document.getElementById("spells");
+
+    spellData.forEach((level) => {
+      // Create spell section
+      const section = document.createElement("div");
+      section.className = "spell-section";
+
+      // Create spell header
+      const header = document.createElement("div");
+      header.className = "spell-header";
+      header.innerHTML = `
+        <span>${level.level}</span>
+        <div class="spell-slots">
+          ${Array(level.slots.total)
+            .fill()
             .map(
-              (spell) => `
-            <div>
-              <strong>${spell.name}:</strong> ${spell.description}
-            </div>
-          `
+              (_, index) =>
+                `<span class="slot ${
+                  index < level.slots.active ? "active" : "inactive"
+                }"></span>`
             )
             .join("")}
         </div>
-      </div>
-    `
-      )
-      .join("");
+      `;
+
+      // Create spell body
+      const body = document.createElement("div");
+      body.className = "spell-body";
+      level.spells.forEach((spell) => {
+        const spellDiv = document.createElement("div");
+        spellDiv.className = "spell-entry";
+        spellDiv.innerHTML = `
+          <span class="spell-name">${spell.name}</span>
+          <span class="spell-info">Duration: ${spell.duration} | Range: ${spell.range}</span>
+          <span class="spell-description">${spell.description}</span>
+        `;
+        body.appendChild(spellDiv);
+      });
+
+      // Add toggle functionality
+      header.addEventListener("click", () => {
+        body.style.display = body.style.display === "block" ? "none" : "block";
+      });
+
+      // Append to section
+      section.appendChild(header);
+      section.appendChild(body);
+
+      // Append section to container
+      spellsContainer.appendChild(section);
+    });
   };
 
-  // Initialize App
-  const initApp = () => {
-    renderSpells();
-  };
-
-  initApp();
+  renderSpells();
 });
