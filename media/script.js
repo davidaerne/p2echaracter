@@ -1,87 +1,72 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const spellData = [
-    {
-      level: "Spell Rank 3",
-      slots: { active: 2, total: 3 },
-      spells: [
-        {
-          name: "Heroism",
-          duration: "10 minutes",
-          range: "Touch",
-          description:
-            "Grants a +1 status bonus to attack rolls, Perception checks, saving throws, and skill checks for 10 minutes.",
-        },
-        {
-          name: "Chilling Darkness",
-          duration: "—",
-          range: "120 feet",
-          description:
-            "Deals cold damage to a target and harms creatures with a weakness to sunlight.",
-        },
-        {
-          name: "Claim Curse",
-          duration: "5 minutes",
-          range: "Touch",
-          description:
-            "Removes a curse from the target and transfers it to yourself for a limited time.",
-        },
-      ],
-    },
-  ];
+/* Spell Section Container */
+.spell-section {
+  border: 1px solid #660000;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
 
-  const renderSpells = () => {
-    const spellsContainer = document.getElementById("spells");
+/* Spell Header */
+.spell-header {
+  background: #660000;
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
 
-    spellData.forEach((level) => {
-      // Create spell section
-      const section = document.createElement("div");
-      section.className = "spell-section";
+.spell-header:hover {
+  background: #990000;
+}
 
-      // Create spell header
-      const header = document.createElement("div");
-      header.className = "spell-header";
-      header.innerHTML = `
-        <span>${level.level}</span>
-        <div class="spell-slots">
-          ${Array(level.slots.total)
-            .fill()
-            .map(
-              (_, index) =>
-                `<span class="slot ${
-                  index < level.slots.active ? "active" : "inactive"
-                }"></span>`
-            )
-            .join("")}
-        </div>
-      `;
+/* Spell Slots */
+.spell-slots {
+  display: flex;
+  gap: 5px;
+}
 
-      // Create spell body
-      const body = document.createElement("div");
-      body.className = "spell-body";
-      level.spells.forEach((spell) => {
-        const spellDiv = document.createElement("div");
-        spellDiv.className = "spell-entry";
-        spellDiv.innerHTML = `
-          <span class="spell-name">${spell.name}</span>
-          <span class="spell-info">Duration: ${spell.duration} | Range: ${spell.range}</span>
-          <span class="spell-description">${spell.description}</span>
-        `;
-        body.appendChild(spellDiv);
-      });
+.slot {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid white;
+}
 
-      // Add toggle functionality
-      header.addEventListener("click", () => {
-        body.style.display = body.style.display === "block" ? "none" : "block";
-      });
+.slot.active {
+  background: white;
+}
 
-      // Append to section
-      section.appendChild(header);
-      section.appendChild(body);
+.slot.inactive {
+  background: #660000;
+}
 
-      // Append section to container
-      spellsContainer.appendChild(section);
-    });
-  };
+/* Spell Body */
+.spell-body {
+  display: none;
+  background: #f9f9f9;
+  padding: 10px;
+}
 
-  renderSpells();
-});
+/* Spell Entry */
+.spell-entry {
+  margin-bottom: 10px;
+}
+
+.spell-name {
+  font-weight: bold;
+  color: #660000;
+}
+
+.spell-info {
+  display: block;
+  font-size: 12px;
+  color: #333;
+}
+
+.spell-description {
+  font-size: 14px;
+  color: #555;
+  margin-top: 5px;
+}
