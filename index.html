@@ -4,84 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Character Viewer</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f4f4f4;
-    }
-    header {
-      background: #333;
-      color: white;
-      padding: 15px;
-      text-align: center;
-    }
-    nav {
-      display: flex;
-      justify-content: center;
-      background: #444;
-    }
-    nav button {
-      background: #555;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      cursor: pointer;
-      flex: 1;
-      font-size: 16px;
-    }
-    nav button.active {
-      background: #007BFF;
-    }
-    nav button:hover {
-      background: #666;
-    }
-    .content {
-      display: none;
-      padding: 20px;
-    }
-    .content.active {
-      display: block;
-    }
-    h2 {
-      color: #007BFF;
-    }
-    .recipe {
-      margin-bottom: 20px;
-      padding: 10px;
-      border: 1px solid #ddd;
-      background: white;
-      border-radius: 5px;
-    }
-    .recipe-header {
-      font-weight: bold;
-      cursor: pointer;
-      background: #f4f4f4;
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-    }
-    .recipe-header:hover {
-      background: #ddd;
-    }
-    .recipe-body {
-      display: none;
-      padding: 10px;
-    }
-    .recipe-section {
-      margin-bottom: 10px;
-    }
-    .recipe-section h3 {
-      font-size: 16px;
-      margin: 5px 0;
-      color: #555;
-    }
-    .recipe-section p, .recipe-section ul {
-      margin: 5px 0;
-      font-size: 14px;
-      color: #333;
-    }
-  </style>
+  <link rel="stylesheet" href="media/style.css">
 </head>
 <body>
   <header>
@@ -123,6 +46,23 @@
         level: 5,
         ancestry: "Samsaran",
         heritage: "Oracular Samsaran",
+        spells: [
+          {
+            level: "Cantrips",
+            spells: [
+              { name: "Stabilize", duration: "--", range: "30 feet", save: "--" },
+              { name: "Guidance", duration: "Until the start of your next turn", range: "30 feet", save: "--" },
+              { name: "Forbidding Ward", duration: "Sustained up to 1 minute", range: "30 feet", save: "--" },
+              { name: "Light", duration: "Until your next daily preparations", range: "120 feet", save: "--" },
+              { name: "Daze", duration: "1 round", range: "60 feet", save: "Will" },
+              { name: "Vitality Lash", duration: "--", range: "30 feet", save: "Fortitude" }
+            ]
+          }
+        ],
+        feats: [
+          { name: "Nudge the Scales", type: "Awarded Feat" },
+          { name: "Reach Spell", type: "Class Feat" }
+        ],
         recipes: [
           {
             name: "Remove Curse Alchemical Elixir",
@@ -160,60 +100,59 @@
       }
     };
 
-    const renderRecipes = () => {
-      const recipesDiv = document.getElementById("recipes-list");
-      const recipes = characterData.build.recipes;
-
-      recipes.forEach(recipe => {
-        recipesDiv.innerHTML += `
-          <div class="recipe">
-            <div class="recipe-header" onclick="toggleRecipeBody(this)">
-              ${recipe.name} (Level ${recipe.level})
-            </div>
-            <div class="recipe-body">
-              <div class="recipe-section">
-                <h3>Crafting Information</h3>
-                <p><strong>Crafting DC:</strong> ${recipe.craftingDC}</p>
-                <p><strong>Cost:</strong> ${recipe.cost}</p>
-                <p><strong>Batch Yield:</strong> ${recipe.batchYield}</p>
-                <p><strong>Traits:</strong> ${recipe.traits.join(", ")}</p>
-                <p><strong>Usage:</strong> ${recipe.usage}</p>
-                <p><strong>Activation:</strong> ${recipe.activation}</p>
-              </div>
-              <div class="recipe-section">
-                <h3>Effects</h3>
-                <p>${recipe.effects}</p>
-              </div>
-              <div class="recipe-section">
-                <h3>Recipe Components</h3>
-                <p>${recipe.components}</p>
-              </div>
-              <div class="recipe-section">
-                <h3>Crafting Instructions</h3>
-                <p>${recipe.instructions}</p>
-              </div>
-            </div>
-          </div>
-        `;
-      });
+    const renderCharacterInfo = () => {
+      document.getElementById("info").innerHTML = `
+        <p><strong>Name:</strong> ${characterData.build.name}</p>
+        <p><strong>Class:</strong> ${characterData.build.class}</p>
+        <p><strong>Level:</strong> ${characterData.build.level}</p>
+        <p><strong>Ancestry:</strong> ${characterData.build.ancestry}</p>
+        <p><strong>Heritage:</strong> ${characterData.build.heritage}</p>
+      `;
     };
 
-    const toggleRecipeBody = (header) => {
-      const body = header.nextElementSibling;
-      body.style.display = body.style.display === "block" ? "none" : "block";
+    const renderSpells = () => {
+      const spellsDiv = document.getElementById("spells-list");
+      spellsDiv.innerHTML = characterData.build.spells.map(spellLevel => `
+        <h3>${spellLevel.level} Spells</h3>
+        ${spellLevel.spells.map(spell => `
+          <div><strong>${spell.name}</strong> - Duration: ${spell.duration}, Range: ${spell.range}, Save: ${spell.save}</div>
+        `).join("")}
+      `).join("");
+    };
+
+    const renderFeats = () => {
+      const featsDiv = document.getElementById("feats-list");
+      featsDiv.innerHTML = characterData.build.feats.map(feat => `
+        <div><strong>${feat.name}</strong> (${feat.type})</div>
+      `).join("");
+    };
+
+    const renderRecipes = () => {
+      const recipesDiv = document.getElementById("recipes-list");
+      recipesDiv.innerHTML = characterData.build.recipes.map(recipe => `
+        <div>
+          <h3>${recipe.name} (Level ${recipe.level})</h3>
+          <p><strong>Crafting DC:</strong> ${recipe.craftingDC}</p>
+          <p><strong>Effects:</strong> ${recipe.effects}</p>
+          <p><strong>Components:</strong> ${recipe.components}</p>
+          <p><strong>Instructions:</strong> ${recipe.instructions}</p>
+        </div>
+      `).join("");
     };
 
     document.querySelectorAll(".tab-button").forEach(button => {
       button.addEventListener("click", () => {
         document.querySelectorAll(".tab-button").forEach(btn => btn.classList.remove("active"));
         document.querySelectorAll(".content").forEach(content => content.classList.remove("active"));
-
         button.classList.add("active");
         document.getElementById(button.dataset.tab).classList.add("active");
       });
     });
 
     const initApp = () => {
+      renderCharacterInfo();
+      renderSpells();
+      renderFeats();
       renderRecipes();
     };
 
