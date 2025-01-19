@@ -4,159 +4,68 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Character Viewer</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="media/style.css">
+  <script defer src="media/script.js"></script>
 </head>
 <body>
-  <header>
-    <h1>Character Viewer</h1>
-  </header>
-  <nav>
-    <button class="tab-button active" data-tab="character-info">Character Info</button>
-    <button class="tab-button" data-tab="spells">Spells</button>
-    <button class="tab-button" data-tab="feats">Feats</button>
-    <button class="tab-button" data-tab="skills-and-saves">Skills and Saves</button>
-    <button class="tab-button" data-tab="recipes">Recipes</button>
-  </nav>
-  <div id="character-info" class="content active">
-    <h2>Character Info</h2>
-    <div id="info"></div>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <button class="sidebar-toggle">
+        <span class="material-icons">menu</span>
+      </button>
+      <ul class="sidebar-menu">
+        <li class="sidebar-item active" data-tab="character-info">
+          <span class="material-icons">person</span>
+          <span class="sidebar-text">Character Info</span>
+        </li>
+        <li class="sidebar-item" data-tab="spells">
+          <span class="material-icons">magic</span>
+          <span class="sidebar-text">Spells</span>
+        </li>
+        <li class="sidebar-item" data-tab="feats">
+          <span class="material-icons">stars</span>
+          <span class="sidebar-text">Feats</span>
+        </li>
+        <li class="sidebar-item" data-tab="skills-and-saves">
+          <span class="material-icons">assessment</span>
+          <span class="sidebar-text">Skills and Saves</span>
+        </li>
+        <li class="sidebar-item" data-tab="recipes">
+          <span class="material-icons">science</span>
+          <span class="sidebar-text">Recipes</span>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <header>
+        <h1>Character Viewer</h1>
+      </header>
+      <div id="character-info" class="content active">
+        <h2>Character Info</h2>
+        <div id="info"></div>
+      </div>
+      <div id="spells" class="content">
+        <h2>Spells</h2>
+        <div id="spells-list"></div>
+      </div>
+      <div id="feats" class="content">
+        <h2>Feats</h2>
+        <div id="feats-list"></div>
+      </div>
+      <div id="skills-and-saves" class="content">
+        <h2>Skills and Saves</h2>
+        <div id="saving-throws-list"></div>
+        <div id="skills-list"></div>
+      </div>
+      <div id="recipes" class="content">
+        <h2>Recipes</h2>
+        <div id="recipes-list"></div>
+      </div>
+    </div>
   </div>
-  <div id="spells" class="content">
-    <h2>Spells</h2>
-    <div id="spells-list"></div>
-  </div>
-  <div id="feats" class="content">
-    <h2>Feats</h2>
-    <div id="feats-list"></div>
-  </div>
-  <div id="skills-and-saves" class="content">
-    <h2>Skills and Saves</h2>
-    <div id="saving-throws-list"></div>
-    <div id="skills-list"></div>
-  </div>
-  <div id="recipes" class="content">
-    <h2>Recipes</h2>
-    <div id="recipes-list"></div>
-  </div>
-  <script>
-    const characterData = {
-      build: {
-        name: "Orindral",
-        class: "Alchemist",
-        level: 5,
-        ancestry: "Samsaran",
-        heritage: "Oracular Samsaran",
-        spells: [
-          {
-            level: "Cantrips",
-            spells: [
-              { name: "Stabilize", duration: "--", range: "30 feet", save: "--" },
-              { name: "Guidance", duration: "Until the start of your next turn", range: "30 feet", save: "--" },
-              { name: "Forbidding Ward", duration: "Sustained up to 1 minute", range: "30 feet", save: "--" },
-              { name: "Light", duration: "Until your next daily preparations", range: "120 feet", save: "--" },
-              { name: "Daze", duration: "1 round", range: "60 feet", save: "Will" },
-              { name: "Vitality Lash", duration: "--", range: "30 feet", save: "Fortitude" }
-            ]
-          }
-        ],
-        feats: [
-          { name: "Nudge the Scales", type: "Awarded Feat" },
-          { name: "Reach Spell", type: "Class Feat" }
-        ],
-        recipes: [
-          {
-            name: "Remove Curse Alchemical Elixir",
-            level: 4,
-            craftingDC: 18,
-            cost: "30 gp (raw materials)",
-            batchYield: "2 elixirs",
-            traits: ["Alchemical", "Consumable", "Healing", "Magical"],
-            usage: "Held in 1 hand",
-            activation: "[1 action] to drink or [2 actions] to administer",
-            effects: `
-              When consumed, the elixir emits a soothing light that flows through the target’s body. 
-              The drinker can immediately attempt a new saving throw against one curse currently affecting them, 
-              using a bonus equal to the alchemist's crafting DC instead of their own saving throw bonus, if it is higher.
-              
-              Alternatively, the alchemist may target the curse directly with this elixir as part of administering it. 
-              If so, the alchemist makes a Crafting check against the curse’s DC to attempt to remove it. This requires [2 actions].
-            `,
-            components: `
-              - Shimmering Nightshade Extract – Known for absorbing magical misalignments.
-              - Purified Silver Dust – A symbolic representation of purity, finely ground and infused into the mixture.
-              - Essence of Moonlight – Captured through a delicate alchemical distillation process under a full moon.
-              - Etherial Willow Sap – Drawn from a magical willow tree rumored to grow near sources of divine energy.
-            `,
-            instructions: `
-              1. Begin with a concentrated solution of purified water and distilled alcohol.
-              2. Carefully stir in the silver dust until the liquid sparkles faintly in light.
-              3. Add the shimmering nightshade extract, stirring counterclockwise to stabilize the magical properties.
-              4. Introduce the moonlight essence drop by drop, timing each addition with a soft chant of purification.
-              5. Heat the mixture gently with an alchemical flame, adding the willow sap at the peak of heating to bind the energies.
-              6. Cool the elixir in a silver container to finalize.
-            `
-          }
-        ]
-      }
-    };
-
-    const renderCharacterInfo = () => {
-      document.getElementById("info").innerHTML = `
-        <p><strong>Name:</strong> ${characterData.build.name}</p>
-        <p><strong>Class:</strong> ${characterData.build.class}</p>
-        <p><strong>Level:</strong> ${characterData.build.level}</p>
-        <p><strong>Ancestry:</strong> ${characterData.build.ancestry}</p>
-        <p><strong>Heritage:</strong> ${characterData.build.heritage}</p>
-      `;
-    };
-
-    const renderSpells = () => {
-      const spellsDiv = document.getElementById("spells-list");
-      spellsDiv.innerHTML = characterData.build.spells.map(spellLevel => `
-        <h3>${spellLevel.level} Spells</h3>
-        ${spellLevel.spells.map(spell => `
-          <div><strong>${spell.name}</strong> - Duration: ${spell.duration}, Range: ${spell.range}, Save: ${spell.save}</div>
-        `).join("")}
-      `).join("");
-    };
-
-    const renderFeats = () => {
-      const featsDiv = document.getElementById("feats-list");
-      featsDiv.innerHTML = characterData.build.feats.map(feat => `
-        <div><strong>${feat.name}</strong> (${feat.type})</div>
-      `).join("");
-    };
-
-    const renderRecipes = () => {
-      const recipesDiv = document.getElementById("recipes-list");
-      recipesDiv.innerHTML = characterData.build.recipes.map(recipe => `
-        <div>
-          <h3>${recipe.name} (Level ${recipe.level})</h3>
-          <p><strong>Crafting DC:</strong> ${recipe.craftingDC}</p>
-          <p><strong>Effects:</strong> ${recipe.effects}</p>
-          <p><strong>Components:</strong> ${recipe.components}</p>
-          <p><strong>Instructions:</strong> ${recipe.instructions}</p>
-        </div>
-      `).join("");
-    };
-
-    document.querySelectorAll(".tab-button").forEach(button => {
-      button.addEventListener("click", () => {
-        document.querySelectorAll(".tab-button").forEach(btn => btn.classList.remove("active"));
-        document.querySelectorAll(".content").forEach(content => content.classList.remove("active"));
-        button.classList.add("active");
-        document.getElementById(button.dataset.tab).classList.add("active");
-      });
-    });
-
-    const initApp = () => {
-      renderCharacterInfo();
-      renderSpells();
-      renderFeats();
-      renderRecipes();
-    };
-
-    initApp();
-  </script>
 </body>
 </html>
