@@ -1,3 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Character Viewer</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="media/style.css">
+  <script defer src="media/script.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <button class="sidebar-toggle">
+        <span class="material-icons">menu</span>
+      </button>
+      <ul class="sidebar-menu">
+        <li class="sidebar-item active" data-tab="character-info">
+          <span class="material-icons">person</span>
+          <span class="sidebar-text">Character Info</span>
+        </li>
+        <li class="sidebar-item" data-tab="spells">
+          <span class="material-icons">auto_awesome</span>
+          <span class="sidebar-text">Spells</span>
+        </li>
+        <li class="sidebar-item" data-tab="feats">
+          <span class="material-icons">stars</span>
+          <span class="sidebar-text">Feats</span>
+        </li>
+        <li class="sidebar-item" data-tab="skills-and-saves">
+          <span class="material-icons">assessment</span>
+          <span class="sidebar-text">Skills and Saves</span>
+        </li>
+        <li class="sidebar-item" data-tab="recipes">
+          <span class="material-icons">science</span>
+          <span class="sidebar-text">Recipes</span>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <header>
+        <h1>Character Viewer</h1>
+      </header>
+      <div id="character-info" class="content active">
+        <h2>Character Info</h2>
+        <div id="info"></div>
+      </div>
 <div id="spells" class="content">
   <h2>Spells</h2>
   <div class="spell-section" id="spell-level-3">
@@ -34,3 +84,21 @@
     </div>
   </div>
 </div>
+
+      <div id="feats" class="content">
+        <h2>Feats</h2>
+        <div id="feats-list"></div>
+      </div>
+      <div id="skills-and-saves" class="content">
+        <h2>Skills and Saves</h2>
+        <div id="saving-throws-list"></div>
+        <div id="skills-list"></div>
+      </div>
+      <div id="recipes" class="content">
+        <h2>Recipes</h2>
+        <div id="recipes-list"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
