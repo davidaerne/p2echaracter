@@ -4,7 +4,26 @@ document.addEventListener("DOMContentLoaded", () => {
   const sidebarItems = document.querySelectorAll(".sidebar-item");
   const contentSections = document.querySelectorAll(".content");
 
-  // Fetch spells from spells.json
+  // Toggle Sidebar Expansion
+  toggleButton.addEventListener("click", () => {
+    sidebar.classList.toggle("expanded");
+  });
+
+  // Navigation Menu Click
+  sidebarItems.forEach((item) => {
+    item.addEventListener("click", () => {
+      sidebarItems.forEach((i) => i.classList.remove("active"));
+      item.classList.add("active");
+
+      const tab = item.dataset.tab;
+      contentSections.forEach((section) => {
+        section.classList.remove("active");
+        if (section.id === tab) section.classList.add("active");
+      });
+    });
+  });
+
+  // Load Spells Dynamically
   const fetchSpells = async () => {
     try {
       const response = await fetch("spells.json");
@@ -15,7 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // Render Spells
   const renderSpells = (spells) => {
     const spellsList = document.getElementById("spells-list");
     spellsList.innerHTML = spells
@@ -41,24 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
       .join("");
   };
 
-  // Sidebar Navigation
-  toggleButton.addEventListener("click", () => {
-    sidebar.classList.toggle("expanded");
-  });
-
-  sidebarItems.forEach((item) => {
-    item.addEventListener("click", () => {
-      sidebarItems.forEach((i) => i.classList.remove("active"));
-      item.classList.add("active");
-
-      const tab = item.dataset.tab;
-      contentSections.forEach((section) => {
-        section.classList.remove("active");
-        if (section.id === tab) section.classList.add("active");
-      });
-    });
-  });
-
-  // Initialize
+  // Initialize App
   fetchSpells();
 });
