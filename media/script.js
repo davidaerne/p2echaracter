@@ -1,72 +1,64 @@
-/* Spell Section Container */
-.spell-section {
-  border: 1px solid #660000;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  overflow: hidden;
-}
+document.addEventListener("DOMContentLoaded", () => {
+  const sidebar = document.querySelector(".sidebar");
+  const toggleButton = document.querySelector(".sidebar-toggle");
+  const sidebarItems = document.querySelectorAll(".sidebar-item");
+  const contentSections = document.querySelectorAll(".content");
 
-/* Spell Header */
-.spell-header {
-  background: #660000;
-  color: white;
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-}
+  // Fetch spells from spells.json
+  const fetchSpells = async () => {
+    try {
+      const response = await fetch("spells.json");
+      const spells = await response.json();
+      renderSpells(spells);
+    } catch (error) {
+      console.error("Error loading spells:", error);
+    }
+  };
 
-.spell-header:hover {
-  background: #990000;
-}
+  // Render Spells
+  const renderSpells = (spells) => {
+    const spellsList = document.getElementById("spells-list");
+    spellsList.innerHTML = spells
+      .map(
+        (spell) => `
+      <div class="spell-card">
+        <h3><a href="${spell.Url}" target="_blank">${spell.name}</a></h3>
+        <div class="spell-traits">
+          ${spell.traits.map((trait) => `<span>${trait}</span>`).join("")}
+        </div>
+        <p class="spell-info">
+          <strong>Type:</strong> ${spell.type} | 
+          <strong>Level:</strong> ${spell.level} | 
+          <strong>Traditions:</strong> ${spell.traditions.join(", ")} | 
+          <strong>Cast:</strong> ${spell.cast} | 
+          <strong>Area:</strong> ${spell.area || "—"} | 
+          <strong>Saving Throw:</strong> ${spell["saving throw"] || "—"}
+        </p>
+        <p class="spell-description">${spell.description}</p>
+      </div>
+    `
+      )
+      .join("");
+  };
 
-/* Spell Slots */
-.spell-slots {
-  display: flex;
-  gap: 5px;
-}
+  // Sidebar Navigation
+  toggleButton.addEventListener("click", () => {
+    sidebar.classList.toggle("expanded");
+  });
 
-.slot {
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  border: 1px solid white;
-}
+  sidebarItems.forEach((item) => {
+    item.addEventListener("click", () => {
+      sidebarItems.forEach((i) => i.classList.remove("active"));
+      item.classList.add("active");
 
-.slot.active {
-  background: white;
-}
+      const tab = item.dataset.tab;
+      contentSections.forEach((section) => {
+        section.classList.remove("active");
+        if (section.id === tab) section.classList.add("active");
+      });
+    });
+  });
 
-.slot.inactive {
-  background: #660000;
-}
-
-/* Spell Body */
-.spell-body {
-  display: none;
-  background: #f9f9f9;
-  padding: 10px;
-}
-
-/* Spell Entry */
-.spell-entry {
-  margin-bottom: 10px;
-}
-
-.spell-name {
-  font-weight: bold;
-  color: #660000;
-}
-
-.spell-info {
-  display: block;
-  font-size: 12px;
-  color: #333;
-}
-
-.spell-description {
-  font-size: 14px;
-  color: #555;
-  margin-top: 5px;
-}
+  // Initialize
+  fetchSpells();
+});
