@@ -95,3 +95,8 @@ h2 {
 .content.active {
   display: block;
 }
+#empty-list-message {
+    font-style: italic;
+    color: gray;
+    margin-top: 1em;
+}
