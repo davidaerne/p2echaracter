@@ -1,64 +1,54 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const sidebar = document.querySelector(".sidebar");
-  const toggleButton = document.querySelector(".sidebar-toggle");
-  const sidebarItems = document.querySelectorAll(".sidebar-item");
-  const contentSections = document.querySelectorAll(".content");
-
-  // Toggle Sidebar Expansion
-  toggleButton.addEventListener("click", () => {
-    sidebar.classList.toggle("expanded");
-  });
-
-  // Navigation Menu Click
-  sidebarItems.forEach((item) => {
-    item.addEventListener("click", () => {
-      sidebarItems.forEach((i) => i.classList.remove("active"));
-      item.classList.add("active");
-
-      const tab = item.dataset.tab;
-      contentSections.forEach((section) => {
-        section.classList.remove("active");
-        if (section.id === tab) section.classList.add("active");
-      });
-    });
-  });
-
-  // Load Spells Dynamically
-  const fetchSpells = async () => {
-    try {
-      const response = await fetch("spells.json");
-      const spells = await response.json();
-      renderSpells(spells);
-    } catch (error) {
-      console.error("Error loading spells:", error);
+// Fetch character JSON and render content
+async function loadCharacterData() {
+  try {
+    const response = await fetch('https://raw.githubusercontent.com/davidaerne/p2echaracter/main/character.json');
+    if (!response.ok) {
+      throw new Error('Failed to fetch character data');
     }
-  };
+    const data = await response.json();
+    renderCharacterInfo(data);
+    renderSpells(data);
+    renderFeats(data);
+  } catch (error) {
+    console.error('Error loading character data:', error);
+  }
+}
 
-  const renderSpells = (spells) => {
-    const spellsList = document.getElementById("spells-list");
-    spellsList.innerHTML = spells
-      .map(
-        (spell) => `
-      <div class="spell-card">
-        <h3><a href="${spell.Url}" target="_blank">${spell.name}</a></h3>
-        <div class="spell-traits">
-          ${spell.traits.map((trait) => `<span>${trait}</span>`).join("")}
-        </div>
-        <p class="spell-info">
-          <strong>Type:</strong> ${spell.type} | 
-          <strong>Level:</strong> ${spell.level} | 
-          <strong>Traditions:</strong> ${spell.traditions.join(", ")} | 
-          <strong>Cast:</strong> ${spell.cast} | 
-          <strong>Area:</strong> ${spell.area || "—"} | 
-          <strong>Saving Throw:</strong> ${spell["saving throw"] || "—"}
-        </p>
-        <p class="spell-description">${spell.description}</p>
-      </div>
-    `
-      )
-      .join("");
-  };
+// Update the HTML dynamically for Character Info
+function renderCharacterInfo(data) {
+  const infoContainer = document.getElementById('info');
+  infoContainer.innerHTML = `
+    <p><strong>Name:</strong> ${data.name}</p>
+    <p><strong>Class:</strong> ${data.class}</p>
+    <p><strong>Level:</strong> ${data.level}</p>
+    <p><strong>Stats:</strong></p>
+    <ul>
+      ${Object.entries(data.stats).map(([stat, value]) => `<li>${stat}: ${value}</li>`).join('')}
+    </ul>
+  `;
+}
 
-  // Initialize App
-  fetchSpells();
+// Update the HTML dynamically for Spells
+function renderSpells(data) {
+  const spellsContainer = document.getElementById('spells-list');
+  spellsContainer.innerHTML = `
+    <ul>
+      ${data.spells.map(spell => `<li>${spell}</li>`).join('')}
+    </ul>
+  `;
+}
+
+// Update the HTML dynamically for Feats
+function renderFeats(data) {
+  const featsContainer = document.getElementById('feats-list');
+  featsContainer.innerHTML = `
+    <ul>
+      ${data.feats.map(feat => `<li>${feat}</li>`).join('')}
+    </ul>
+  `;
+}
+
+// Initialize app
+document.addEventListener('DOMContentLoaded', () => {
+  loadCharacterData();
 });
